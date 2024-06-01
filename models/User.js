@@ -6,18 +6,20 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        minlength: [3, '`{PATH}` must be at least {MINLENGTH} characters long']
     },
     email: {
         type: String,
         required: true,
         unique: true,
         // e-mail validation (regex) and \S matches all non-space characters
-        match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address.']  
+        match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address']  
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        minlength: [3, '`{PATH}` must be at least {MINLENGTH} characters long']
     },
     role: {
         type: String,
@@ -25,7 +27,13 @@ const userSchema = new mongoose.Schema({
         // standart role
         default: 'user',
         // only 'user' or 'admin' are valid roles
-        enum: ['user', 'admin']
+        /* enum: ['user', 'admin'], */
+        validate: {
+            validator: function(role) {
+                return role === 'user' || role === 'admin';
+            },
+            message: props => `${props.value} is not valid! It must be user either admin`
+        }
     },
     
     

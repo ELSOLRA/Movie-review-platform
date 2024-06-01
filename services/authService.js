@@ -51,6 +51,7 @@ const authService = {
             throw new Error(error.message);
         };
     }
-}
+};
 
 
+module.exports = authService; 
