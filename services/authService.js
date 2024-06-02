@@ -13,7 +13,7 @@ const authService = {
             };
 
             const newUser = await User.create({ username, email, password, role });
-            const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '30m' });
+            const token = jwt.sign({ userId: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '30m' });
             return { user: { username, email, role }, token }
 
         } catch (error) {
@@ -24,6 +24,7 @@ const authService = {
     login: async (username, password) => {
         try {
             const user = await User.findOne({ username });
+            console.log(' here user in authserv login: ', user);
             if (!user) {
                 throw new Error('Invalid username');
             };
@@ -32,8 +33,13 @@ const authService = {
             if (!passwordMatch) {
                 throw new Error('Invalid password');
             }
-            const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '30m' })
-            return { user: { username, email, role }, token }
+            const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '30m' })
+            const userData = {
+                username: user.username,
+                email: user.email,
+                role: user.role
+            }
+            return { user:  userData, token }
 
         } catch (error) {
             throw new Error(error.message);
@@ -42,7 +48,7 @@ const authService = {
 
     getUser: async (userId) => {
         try {
-            const user = await User.findById(userId).select('-password');
+            const user = await User.findById(userId).select('-password -__v');
             if (!user) {
                 throw new Error('User not found!');
             }
@@ -50,7 +56,7 @@ const authService = {
         } catch (error) {
             throw new Error(error.message);
         };
-    }
+    } 
 };
 
 
