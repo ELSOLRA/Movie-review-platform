@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { currentYear } = require('../utils/dateUtils');
+
 
 const movieSchema = mongoose.Schema({
 
@@ -12,7 +14,13 @@ const movieSchema = mongoose.Schema({
     },
     releaseYear: {
         type: Number,
-        required: true
+        required: true,
+        validate: {
+            validator: function(releaseYear) {
+                return releaseYear <= currentYear();
+            },
+        message: props => `${props.value} is not valid! It must be year not in the future!`
+        }
     },
     genres: {
         type: [String], 

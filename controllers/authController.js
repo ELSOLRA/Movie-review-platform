@@ -9,7 +9,7 @@ const registerUser = async (req, res) => {
 
         res.status(201).json({ success: true, message: `user ${username} registrated successfully`, token: newUser.token });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ success: false, error: error.message });
     }
 
 };
@@ -18,11 +18,12 @@ const loginUser = async (req,res) => {
     const { username, password } = req.body;
     try {
         const user = await authService.login( username, password);
+        //  ----!!!! this only to see tokens inside ! later needs to be removed!! 
         const dec = jwt.decode(user.token)
         console.log(user);
         res.status(200).json({ success: true, message: `${username} is now logged in as '${user.user.role}' `, token: user.token, dec: dec});
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ success: false, error: error.message });
     }
 }
 

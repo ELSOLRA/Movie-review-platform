@@ -25,7 +25,7 @@ const authMiddleware = (req, res, next) => {
             res.status(401).json({ error: 'Token invalid or expired' })
         }
     } else {
-        next();
+        return res.status(401).json({ error: 'Authorization token missing or invalid' });
     }
 }
 

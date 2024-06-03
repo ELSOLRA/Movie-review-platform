@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const connectDb = require('./config/connectDb');
 const authRoutes = require('./routes/authRoutes');
+const movieRoutes = require('./routes/movieRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const URL = process.env.URL || 'localhost';
@@ -9,6 +10,7 @@ const URL = process.env.URL || 'localhost';
 app.use(express.json());
 
 app.use('/', authRoutes); 
+app.use('/movies', movieRoutes); 
 
 const startServer = async () => {
     try {
