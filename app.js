@@ -3,6 +3,7 @@ const express = require('express');
 const connectDb = require('./config/connectDb');
 const authRoutes = require('./routes/authRoutes');
 const movieRoutes = require('./routes/movieRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const URL = process.env.URL || 'localhost';
@@ -11,6 +12,7 @@ app.use(express.json());
 
 app.use('/', authRoutes); 
 app.use('/movies', movieRoutes); 
+app.use('/reviews', reviewRoutes); 
 
 const startServer = async () => {
     try {

@@ -1,6 +1,7 @@
 
 const Movie = require('../models/Movie');
 
+
 const movieService = {
 
     saveNewMovie: async (title, director, releaseYear, genres) => {
@@ -49,6 +50,19 @@ const movieService = {
                 throw new Error('Movie not found!');
             };
             return movie;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
+
+    deleteMovie: async(movieId) => {
+        try {
+            const movie = await Movie.findByIdAndDelete(movieId);
+            if (!movie) {
+                throw new Error('Movie not found!');
+            };
+            return movie.title;
         } catch (error) {
             throw new Error(error.message);
         }
