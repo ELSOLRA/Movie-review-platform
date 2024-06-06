@@ -2,8 +2,10 @@
   "name": "movie-review-platform",
   "version": "1.0.0",
   "description": "Examination - Filmrecensionsplattform (course examination)",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "node app.js",
+    "setup-env": "node config/setupEnv.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,6 +15,7 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "inquirer": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.7.0",
     "mongoose": "^8.4.0"
