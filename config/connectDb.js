@@ -1,6 +1,5 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-console.log(process.env.DATABASE_URI);
 
 const connectDb = async () => {
     try {
@@ -16,15 +15,14 @@ const connectDb = async () => {
         const dbName = dbConnection.connection.db.databaseName;
         console.log(`Connected to: ${dbName}`);
 
-        } catch (error) {
-            if (error.name === 'MongooseServerSelectionError') {
-                console.error('Failed to connect: Could not connect to any servers in MongoDB : ', error.message);
-            } else {
+    } catch (error) {
+        if (error.name === 'MongooseServerSelectionError') {
+            console.error('Failed to connect: Could not connect to any servers in MongoDB : ', error.message);
+        } else {
             console.error('Failed to connect: ', error.message);
         }
-            process.exit(1); 
-        }
-    };
-    
-    
-    module.exports = connectDb;
+        process.exit(1);
+    }
+};
+
+module.exports = connectDb;

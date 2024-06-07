@@ -12,6 +12,10 @@ const createReview = async (req, res) => {
     } catch (error) {
         if (error.message === 'Movie not found!' || error.message === 'User not found!') {
             return res.status(404).json({ success: false, error: error.message });
+
+        }
+        if (error.message.includes('already exists')) {
+            return res.status(409).json({ success: false, error: error.message });
         } else {
             return res.status(400).json({ success: false, error: error.message });
         }
@@ -38,14 +42,14 @@ const updateReview = async (req, res) => {
     }
 };
 
-const deleteReview = async (req,res) => {
+const deleteReview = async (req, res) => {
     const reviewId = req.params.id;
     const userId = req.user.userId;
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ success: false, error: 'Invalid review ID format' });
     }
     try {
-        const deletedReview = await reviewService.deleteReview(reviewId,userId)
+        const deletedReview = await reviewService.deleteReview(reviewId, userId)
         res.status(200).json({ success: true, message: `Review with ID: ${deletedReview._id} was deleted successfully` });
     } catch (error) {
         if (error.message.includes('Review not found or no permission')) {
@@ -56,66 +60,66 @@ const deleteReview = async (req,res) => {
     }
 };
 
-const getAllReviews = async (req,res) => {
+const getAllReviews = async (req, res) => {
     try {
         const reviews = await reviewService.findReviews();
-        res.status(200).json( {  success: true, allReviews: reviews } );
+        res.status(200).json({ success: true, allReviews: reviews });
     } catch (error) {
         if (error.message === "No reviews were found") {
             return res.status(404).json({ success: false, error: error.message });
         } else {
-           return res.status(500).json({ success: false , error: error.message });
+            return res.status(500).json({ success: false, error: error.message });
         }
     }
 };
 
-const getReview = async (req,res) => {
+const getReview = async (req, res) => {
     const reviewId = req.params.id;
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ success: false, error: 'Invalid review ID format' });
     }
     try {
         const review = await reviewService.findReview(reviewId);
-        res.status(200).json({success: true, review })
+        res.status(200).json({ success: true, review })
     } catch (error) {
         if (error.message === "Review not found!") {
             return res.status(404).json({ success: false, error: error.message });
         } else {
-           return res.status(500).json({ success: false, error: error.message });
+            return res.status(500).json({ success: false, error: error.message });
         }
     }
 };
 
-const getMovieReviews = async (req,res) => {
+const getMovieReviews = async (req, res) => {
     const movieId = req.params.id
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ success: false, error: 'Invalid movie ID format' });
     }
     try {
         const reviews = await reviewService.findMovieReviews(movieId);
-        res.status(200).json({ success: true, reviews });
+        const { movie, movieReviews } = reviews;
+        res.status(200).json({ success: true, movie: movie, reviews: movieReviews });
     } catch (error) {
-        if (error.message === "No reviews found for this movie") {
+        if (error.message === "Movie not found!" || error.message === "No reviews found for this movie") {
             return res.status(404).json({ success: false, error: error.message });
         } else {
-           return res.status(500).json({ success: false, error: error.message });
+            return res.status(500).json({ success: false, error: error.message });
         }
     }
 };
 
-const getMoviesAndAverageRatings = async (req,res) => {
+const getMoviesAndAverageRatings = async (req, res) => {
     try {
         const result = await reviewService.getAverageRatings();
-        console.log('Aggregation result:', result);
-        if(result.length === 0) {
+
+        if (result.length === 0) {
             return res.status(404).json({ message: 'No movies found' });
-         }
-         res.status(200).json({ movies: result });
+        }
+        res.status(200).json({ movies: result });
     } catch (error) {
         console.error('Error in getMoviesAndAverageRatings:', error.message);
         res.status(500).json({ message: error.message });
     }
 }
-
 
 module.exports = { createReview, updateReview, deleteReview, getAllReviews, getReview, getMovieReviews, getMoviesAndAverageRatings } 

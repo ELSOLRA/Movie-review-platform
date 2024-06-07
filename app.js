@@ -10,18 +10,18 @@ const URL = process.env.URL || 'localhost';
 
 app.use(express.json());
 
-app.use('/', authRoutes); 
-app.use('/movies', movieRoutes); 
-app.use('/reviews', reviewRoutes); 
+app.use('/', authRoutes);
+app.use('/movies', movieRoutes);
+app.use('/reviews', reviewRoutes);
 
 const startServer = async () => {
     try {
         await connectDb();
 
-            app.listen(PORT, () => {
-                console.log(`Server running on http://${URL}:${PORT}`);
-                console.log('Application initialized successfully.');
-            });
+        app.listen(PORT, () => {
+            console.log(`Server running on http://${URL}:${PORT}`);
+            console.log('Application initialized successfully.');
+        });
 
     } catch (error) {
         console.error('Failed to start the server:', error);

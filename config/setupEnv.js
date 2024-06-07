@@ -1,7 +1,6 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 
-
 const userQuery = [
     {
         type: 'input',
@@ -36,6 +35,4 @@ inquirer.prompt(userQuery).then((answer) => {
     console.log('.env was created successfully!');
 });
 
-//npm install --save inquirer@^8.0.0
-
-//npm run setup-env
+//npm install --save inquirer@^8.0.0 for require, ellse ES6 import

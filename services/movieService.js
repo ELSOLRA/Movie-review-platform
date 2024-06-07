@@ -1,6 +1,6 @@
 
 const Movie = require('../models/Movie');
-
+const Review = require('../models/Review')
 
 const movieService = {
 
@@ -18,12 +18,24 @@ const movieService = {
         }
     },
 
-    updateMovie: async (id, movieData ) => {
+    updateMovie: async (id, movieData) => {
         try {
+            const { title, director, releaseYear } = movieData;
+            const duplicateMovie = await Movie.findOne({
+                _id: { $ne: id },
+                title,
+                director,
+                releaseYear
+            });
+
+            if (duplicateMovie) {
+                throw new Error(`Movie cannot be updated because there would be a duplicate. 
+                    Try to change one of values (title, director or releaseYear)` );
+            }
             const movie = await Movie.findByIdAndUpdate(
                 id,
                 movieData,
-                { new: true, runValidators: true}
+                { new: true, runValidators: true }
             );
             if (!movie) {
                 throw new Error('Movie not found!');
@@ -37,7 +49,7 @@ const movieService = {
     findAllMovies: async () => {
         try {
             const movies = await Movie.find().select('-__v');
-            return movies; 
+            return movies;
         } catch (error) {
             throw new Error(error.message);
         }
@@ -55,21 +67,20 @@ const movieService = {
         }
     },
 
-
-    deleteMovie: async(movieId) => {
+    deleteMovie: async (movieId) => {
         try {
-            const movie = await Movie.findByIdAndDelete(movieId);
+            const movie = await Movie.findById(movieId);
             if (!movie) {
                 throw new Error('Movie not found!');
-            };
+            }
+            await Review.deleteMany({ movieId });
+            await movie.deleteOne();
+
             return movie.title;
         } catch (error) {
             throw new Error(error.message);
         }
     },
-
-
-
 }
 
 module.exports = movieService; 

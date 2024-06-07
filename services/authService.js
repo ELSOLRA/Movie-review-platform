@@ -24,7 +24,7 @@ const authService = {
     login: async (username, password) => {
         try {
             const user = await User.findOne({ username });
-            console.log(' here user in authserv login: ', user);
+
             if (!user) {
                 throw new Error('Invalid username');
             };
@@ -39,7 +39,7 @@ const authService = {
                 email: user.email,
                 role: user.role
             }
-            return { user:  userData, token }
+            return { user: userData, token }
 
         } catch (error) {
             throw new Error(error.message);
@@ -56,8 +56,7 @@ const authService = {
         } catch (error) {
             throw new Error(error.message);
         };
-    } 
+    }
 };
-
 
 module.exports = authService; 

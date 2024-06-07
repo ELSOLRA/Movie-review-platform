@@ -2,18 +2,21 @@ const Review = require('../models/Review');
 const Movie = require('../models/Movie');
 const User = require('../models/User');
 
-
 const reviewService = {
 
-    addReview: async( movieId, userId, rating, comment ) => {
+    addReview: async (movieId, userId, rating, comment) => {
         try {
+            const user = await User.findById(userId);
+            if (!user) {
+                throw new Error('User not found!');
+            }
             const movie = await Movie.findById(movieId);
             if (!movie) {
                 throw new Error('Movie not found!');
             }
-            const user = await User.findById(userId);
-            if (!user) {
-                throw new Error('User not found!');
+            const existingReview = await Review.findOne({ movieId, userId });
+            if (existingReview) {
+                throw new Error(`Review already exists for user ${user.username} on this movie`);
             }
             const newReview = await Review.create({ movieId, userId, rating, comment })
             return newReview;
@@ -23,19 +26,19 @@ const reviewService = {
         }
     },
 
-    updateReview : async ( reviewId, userId, reviewData ) => {
+    updateReview: async (reviewId, userId, reviewData) => {
         try {
 
             const review = await Review.findOneAndUpdate(
                 { _id: reviewId, userId: userId },
                 {
-// setting only specific fields for update info
+                    // setting only specific fields for update info
                     $set: {
                         rating: reviewData.rating,
                         comment: reviewData.comment
                     }
                 },
-// with "context: 'query'" only validation of specific fields that comes with update
+                // with "context: 'query'" only validation of specific fields that comes with update
                 { new: true, runValidators: true, context: 'query' }
             );
             if (!review) {
@@ -47,7 +50,7 @@ const reviewService = {
         }
     },
 
-    deleteReview : async (reviewId, userId) => {
+    deleteReview: async (reviewId, userId) => {
         try {
             const review = await Review.findOneAndDelete({ _id: reviewId, userId: userId });
             if (!review) {
@@ -60,20 +63,20 @@ const reviewService = {
     },
 
     findReviews: async () => {
-            try {
-                const reviews = await Review.find({}).populate({path: 'movieId', model: 'Movie', select: '-__v'}).populate('userId', 'username').select('-__v');
-                if (!reviews || reviews.length === 0) {
-                    throw new Error('No reviews were found');
-                }
-                return reviews; 
-            } catch (error) {
-                throw new Error(error.message);
+        try {
+            const reviews = await Review.find({}).populate({ path: 'movieId', model: 'Movie', select: '-__v' }).populate('userId', 'username').select('-__v');
+            if (!reviews || reviews.length === 0) {
+                throw new Error('No reviews were found');
             }
-        },
-    
+            return reviews;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
     findReview: async (reviewId) => {
         try {
-            const review = await Review.findById(reviewId).populate({path: 'movieId', model: 'Movie', select: '-__v'}).populate('userId', 'username').select('-__v');
+            const review = await Review.findById(reviewId).populate({ path: 'movieId', model: 'Movie', select: '-__v' }).populate('userId', 'username').select('-__v');
             if (!review) {
                 throw new Error('Review not found!');
             };
@@ -85,11 +88,18 @@ const reviewService = {
 
     findMovieReviews: async (movieId) => {
         try {
-            const movieReviews = await Review.find({ movieId }).populate('movieId', 'title').populate('userId', 'username').select('-__v');
-            if (!movieReviews) {
+
+            const [movieReviews, movie] = await Promise.all([
+                Review.find({ movieId }).populate('userId', 'username').select('-__v -movieId'),
+                Movie.findById(movieId).select('_id title')
+            ]);
+            if (!movie) {
+                throw new Error('Movie not found!');
+            }
+            if (!movieReviews || movieReviews.length === 0) {
                 throw new Error('No reviews found for this movie');
             }
-            return movieReviews;
+            return { movieReviews, movie };
         } catch (error) {
             throw new Error(error.message);
         }
@@ -117,21 +127,19 @@ const reviewService = {
                     }
                 },
                 {
-
                     $project: {
-// projecting what to display and how
+                        // projecting what to display and how
                         _id: 0,
                         movie: {
                             _id: 1,
                             title: 1,
                             director: 1,
                             releaseYear: 1,
-                            genres:1   
+                            genres: 1
                         },
                         averageRating: 1
                     }
                 }
-
             ]);
             return ratings;
         } catch (error) {
@@ -140,8 +148,5 @@ const reviewService = {
         }
     }
 };
-
-
-
 
 module.exports = reviewService; 

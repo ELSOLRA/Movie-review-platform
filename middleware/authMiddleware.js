@@ -13,12 +13,12 @@ const authMiddleware = (req, res, next) => {
         try {
 
             const tokensData = jsonwebtoken.verify(token, process.env.JWT_SECRET);
-            
-        if ( tokensData.role && !['user', 'admin'].includes(tokensData.role)) {
 
-            return res.status(403).json({ error: "Forbidden! Insufficient permissions" });
-        }
-            console.log('data inside token : ', tokensData);
+            if (tokensData.role && !['user', 'admin'].includes(tokensData.role)) {
+
+                return res.status(403).json({ error: "Forbidden! Insufficient permissions" });
+            }
+
             req.user = tokensData;
             next();
         } catch (error) {
