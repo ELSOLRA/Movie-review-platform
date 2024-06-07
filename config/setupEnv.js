@@ -35,4 +35,4 @@ inquirer.prompt(userQuery).then((answer) => {
     console.log('.env was created successfully!');
 });
 
-//npm install --save inquirer@^8.0.0 for require, ellse ES6 import
+//npm install --save inquirer@^8.0.0 for require, else ES6 import

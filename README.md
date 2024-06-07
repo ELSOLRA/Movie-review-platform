@@ -1,5 +1,9 @@
 # Movie-review-platform
 
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Node.js](https://img.shields.io/badge/node-10.2.4-brightgreen)
+![License](https://img.shields.io/badge/license-ISC-green)
+
 Examination - Filmrecensionsplattform (course examination)
 
 The backend for a web application to manage movie reviews. A user can register and, once logged in, leave reviews for movies in the database. The backend is built using Node.js, Express, and MongoDB with Mongoose for data modeling.
