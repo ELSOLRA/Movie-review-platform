@@ -1,4 +1,4 @@
-# Movie-review-platform
+# Movies-review-platform
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![Node.js](https://img.shields.io/badge/node-10.2.4-brightgreen)
@@ -11,7 +11,7 @@ The backend for a web application to manage movie reviews. A user can register a
 
 ## Table of Contents
 
-- [Movie-review-platform](#movie-review-platform)
+  - [Movies-review-platform](#movies-review-platform)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [Setup](#setup)
