@@ -15,6 +15,7 @@ const reviewSchema = new mongoose.Schema({
     rating: {
         type: Number,
         required: true,
+// validator function to check if the rating is between 1 and 5
         validate: {
             validator: function (value) {
                 return value >= 1 && value <= 5;

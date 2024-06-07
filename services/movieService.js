@@ -6,6 +6,7 @@ const movieService = {
 
     saveNewMovie: async (title, director, releaseYear, genres) => {
         try {
+// Checking if a movie with the same title and release year already exists.
             const existingMovie = await Movie.findOne({ $and: [{ title }, { releaseYear }] });
             if (existingMovie) {
                 throw new Error(`The movie "${title}" released in ${releaseYear} already exists`);
@@ -20,7 +21,9 @@ const movieService = {
 
     updateMovie: async (id, movieData) => {
         try {
+// Extracts title, director, and releaseYear from the provided movieData.
             const { title, director, releaseYear } = movieData;
+// Checks if updating the movie would create a duplicate entry.
             const duplicateMovie = await Movie.findOne({
                 _id: { $ne: id },
                 title,
@@ -48,6 +51,7 @@ const movieService = {
 
     findAllMovies: async () => {
         try {
+// excluding the password __v field
             const movies = await Movie.find().select('-__v');
             return movies;
         } catch (error) {
@@ -66,7 +70,7 @@ const movieService = {
             throw new Error(error.message);
         }
     },
-
+// deletes a movie and all associated reviews
     deleteMovie: async (movieId) => {
         try {
             const movie = await Movie.findById(movieId);
