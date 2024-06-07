@@ -26,11 +26,15 @@ const userQuery = [
     },
 ];
 
+// user prompt for input using Inquirer
 inquirer.prompt(userQuery).then((answer) => {
+// converting the answer object into an array
     const content = Object.entries(answer)
+// maping each key-value pair to a string 
     .map(([key,value]) => `${key}=${value}`)
+// joining all the strings with newline 
     .join('\n');
-    
+// writes content to .env    
     fs.writeFileSync('.env', content);
     console.log('.env was created successfully!');
 });

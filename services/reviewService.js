@@ -14,6 +14,7 @@ const reviewService = {
             if (!movie) {
                 throw new Error('Movie not found!');
             }
+// checks if a review already exists for the user and movie combination.
             const existingReview = await Review.findOne({ movieId, userId });
             if (existingReview) {
                 throw new Error(`Review already exists for user ${user.username} on this movie`);
@@ -32,13 +33,13 @@ const reviewService = {
             const review = await Review.findOneAndUpdate(
                 { _id: reviewId, userId: userId },
                 {
-                    // setting only specific fields for update info
+// setting only specific fields for update info
                     $set: {
                         rating: reviewData.rating,
                         comment: reviewData.comment
                     }
                 },
-                // with "context: 'query'" only validation of specific fields that comes with update
+// with "context: 'query'" only validation of specific fields that comes with update
                 { new: true, runValidators: true, context: 'query' }
             );
             if (!review) {
@@ -64,6 +65,7 @@ const reviewService = {
 
     findReviews: async () => {
         try {
+// finds all reviews and populate related data.
             const reviews = await Review.find({}).populate({ path: 'movieId', model: 'Movie', select: '-__v' }).populate('userId', 'username').select('-__v');
             if (!reviews || reviews.length === 0) {
                 throw new Error('No reviews were found');
@@ -76,6 +78,7 @@ const reviewService = {
 
     findReview: async (reviewId) => {
         try {
+// finds the review by ID and populate related data.
             const review = await Review.findById(reviewId).populate({ path: 'movieId', model: 'Movie', select: '-__v' }).populate('userId', 'username').select('-__v');
             if (!review) {
                 throw new Error('Review not found!');
@@ -88,7 +91,7 @@ const reviewService = {
 
     findMovieReviews: async (movieId) => {
         try {
-
+// retrievs movie reviews and movie at the same time
             const [movieReviews, movie] = await Promise.all([
                 Review.find({ movieId }).populate('userId', 'username').select('-__v -movieId'),
                 Movie.findById(movieId).select('_id title')
@@ -107,6 +110,7 @@ const reviewService = {
 
     getAverageRatings: async () => {
         try {
+// aggregation to calculate average ratings for all movies.
             const ratings = await Review.aggregate([
                 {
                     $lookup: {
@@ -128,7 +132,7 @@ const reviewService = {
                 },
                 {
                     $project: {
-                        // projecting what to display and how
+// projecting what to display and how
                         _id: 0,
                         movie: {
                             _id: 1,

@@ -24,6 +24,7 @@ const createReview = async (req, res) => {
 
 const updateReview = async (req, res) => {
     const reviewId = req.params.id;
+// checks if the provided movie ID is a valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ success: false, error: 'Invalid review ID format' });
     }
@@ -45,6 +46,7 @@ const updateReview = async (req, res) => {
 const deleteReview = async (req, res) => {
     const reviewId = req.params.id;
     const userId = req.user.userId;
+// checks if the provided movie ID is a valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ success: false, error: 'Invalid review ID format' });
     }
@@ -75,6 +77,7 @@ const getAllReviews = async (req, res) => {
 
 const getReview = async (req, res) => {
     const reviewId = req.params.id;
+// checks if the provided movie ID is a valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ success: false, error: 'Invalid review ID format' });
     }
@@ -92,11 +95,13 @@ const getReview = async (req, res) => {
 
 const getMovieReviews = async (req, res) => {
     const movieId = req.params.id
+// checks if the provided movie ID is a valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ success: false, error: 'Invalid movie ID format' });
     }
     try {
         const reviews = await reviewService.findMovieReviews(movieId);
+// destructing the response object to extract movie and movieReviews
         const { movie, movieReviews } = reviews;
         res.status(200).json({ success: true, movie: movie, reviews: movieReviews });
     } catch (error) {

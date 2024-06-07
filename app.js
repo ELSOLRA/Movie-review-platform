@@ -14,6 +14,7 @@ app.use('/', authRoutes);
 app.use('/movies', movieRoutes);
 app.use('/reviews', reviewRoutes);
 
+// Function starting the server
 const startServer = async () => {
     try {
         await connectDb();
@@ -25,6 +26,7 @@ const startServer = async () => {
 
     } catch (error) {
         console.error('Failed to start the server:', error);
+// exits the process
         process.exit(1);
     }
 };

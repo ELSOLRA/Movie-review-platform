@@ -5,7 +5,7 @@ const addMovie = async (req, res) => {
     const { title, director, releaseYear, genres } = req.body;
     try {
         const movie = await movieService.saveNewMovie(title, director, releaseYear, genres);
-
+// prepare movie details object to send in response
         const movieDetails = {
             _id: movie.id,
             title: movie.title,
@@ -25,6 +25,7 @@ const addMovie = async (req, res) => {
 };
 
 const updateMovie = async (req, res) => {
+// checks if the provided movie ID is a valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ success: false, error: 'Invalid movie ID format' });
     }
@@ -43,6 +44,7 @@ const updateMovie = async (req, res) => {
 };
 
 const deleteMovie = async (req, res) => {
+// checks if the provided movie ID is a valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ success: false, error: 'Invalid movie ID format' });
     }
@@ -62,9 +64,9 @@ const deleteMovie = async (req, res) => {
 const getAllMovies = async (req, res) => {
     try {
         const movies = await movieService.findAllMovies();
-        // -----!!!! ask what to return here title id or more???? -------!!!!!-----
         res.status(200).json({
             success: true,
+// maps the list of movies to include only title and _id fields
             listOfMovies: movies.map(movie => ({ title: movie.title, _id: movie._id }))
         });
     } catch (error) {
@@ -73,6 +75,7 @@ const getAllMovies = async (req, res) => {
 };
 
 const getMovie = async (req, res) => {
+// checks if the provided movie ID is a valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ success: false, error: 'Invalid movie ID format' });
     }

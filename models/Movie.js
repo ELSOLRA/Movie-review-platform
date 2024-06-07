@@ -14,6 +14,7 @@ const movieSchema = mongoose.Schema({
     releaseYear: {
         type: Number,
         required: true,
+// validator function to check if the release year is not in the future
         validate: {
             validator: function (releaseYear) {
                 return releaseYear <= currentYear();
